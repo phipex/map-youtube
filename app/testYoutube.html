@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<!-- https://www.youtube.com/watch?v=3_1T5l6i_rk&feature=youtu.be -->
+<iframe id="player" width="640" height="360" src="https://www.youtube.com/embed/3_1T5l6i_rk?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+
+<div id="tiempo"></div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="scripts/Youtube.js"></script>
+<script>
+
+  MdlYoutube.ini();
+
+  var $divt = $("#tiempo");
+  setInterval(
+    function(){
+
+      var current = MdlYoutube.getCurrentTime();
+      //console.info("preguntar",current);
+      current = Math.round( current );
+      $divt.html(current);
+      //console.info("preguntar round",current);
+    },
+    800
+  );
+
+</script>
+</body>
+</html>
