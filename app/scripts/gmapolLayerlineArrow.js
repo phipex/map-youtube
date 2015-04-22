@@ -1,12 +1,12 @@
 
 /**
- * 
+ *
  * @returns {gLayerLine}
  */
-var gLayerLine = function() {
+var gLayerLine = function(nombre) {
 
     /**
-     * capa que contiene que las lineas 
+     * capa que contiene que las lineas
      */
     this.vectorLayer;
 
@@ -70,15 +70,15 @@ var gLayerLine = function() {
 
     };
 
-	this.remove = function(map){
+	  this.remove = function(map){
       if(this.vectorLayer)
 	  {
 			map.removeLayer(this.vectorLayer);
 			map.removeLayer(this.vestorLayerArroy);
 	  }
-	  
+
     };
-	
+
     /**
      * crea una capa con linea sencilla
      * @param {Openlayer.map} map
@@ -100,7 +100,7 @@ var gLayerLine = function() {
      * @returns {Array OpenLayers.Feature.Vector}
      */
     this.makeRoute = function(points) {
-        
+
         var lineString = new OpenLayers.Geometry.LineString(points);
         var lineFeature = new OpenLayers.Feature.Vector(lineString, null, this.style_line);
         return [lineFeature];
@@ -109,7 +109,7 @@ var gLayerLine = function() {
 
     /**
      * borra la linea del mapa
-     * 
+     *
      */
     this.delRoute = function() {
 
@@ -119,7 +119,7 @@ var gLayerLine = function() {
 
     /**
      * pinta la linea en el mapa
-     * 
+     *
      */
     this.drawRute = function() {
 
@@ -130,7 +130,7 @@ var gLayerLine = function() {
 
     /**
      * Dibuja una liena en el mapa con flechas en el recorrido
-     * 
+     *
      */
     this.drawRuteArrow = function() {
         route = this.makeRoute(this.puntos);
@@ -163,11 +163,14 @@ var gLayerLine = function() {
      * ingresa un punto en la linea
      * @param {type} lat
      * @param {type} lon
-     * 
+     *
      */
     this.pushPoint = function(lat,lon){
-        this.puntos.push(makePoint(lon, lat));
+      var point = point = new OpenLayers.Geometry.Point(lon,lat);
+
+      this.puntos.push(point);
     };
+
 
 };
 

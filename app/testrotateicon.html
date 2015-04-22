@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body,html{
+            height: 100%;
+            width: 100%;
+        }
+        #map{
+            height: 100%;
+            width: 100%;
+
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+<script src="scripts/MdlGMap.js" ></script>
+<script>
+    MdlGmap.ini();
+
+    
+    var RotateIcon = function (options) {
+      options = options || {};
+      var isComplete = (options.url !== undefined);
+
+      isComplete = isComplete && (options.width !== undefined);
+
+      isComplete = isComplete && (options.height !== undefined);
+
+      if(!isComplete)
+      {
+        throw new Error("No se han ingresado los paramtros necesarios");
+        return;
+      }
+      this.options = {};
+      this.options.width = options.width;
+      this.options.height = options.height;
+      this.rImg = new Image();
+
+      this.rImg.src = options.url;
+      var hidenContent = document.createElement("div");
+      //hidenContent.style.display = "none";
+      document.body.appendChild(hidenContent);
+      hidenContent.appendChild(this.rImg);
+      var canvas = document.createElement("canvas");
+      canvas.width = this.options.width;
+      canvas.height = this.options.height;
+      this.context = canvas.getContext("2d");
+      this.canvas = canvas;
+
+      this.getUrl= function () {
+        this.context.save();
+        this.context.restore();
+        return this.canvas.toDataURL('image/png');
+
+      };
+
+      this.setRotation= function (options) {
+        console.info("setrotation",options);
+        options = options || {};
+        //console.info((options.deg === undefined) && (options.rad  === undefined));
+        if((options.deg === undefined) && (options.rad  === undefined))
+        {
+          throw new Error("No se han ingresado los paramtros necesarios");
+          return;
+        }
+
+        var canvas = this.canvas,
+          degrees = (options.deg != null)? options.deg :
+          options.rad* 180 / Math.PI ,
+          image = this.rImg,
+          ctx = this.context;
+        console.info("degrees",degrees);
+        console.info(canvas);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width/2,canvas.height/2);
+        ctx.rotate(degrees*Math.PI/180);
+        console.info("degrees%180==0",degrees%180==0);
+        /*if(degrees%180==0){
+          console.info("true");
+          ctx.drawImage(image, -image.width/2,-image.height/2);
+        }else{
+          console.info("false");
+          ctx.drawImage(image, -image.width/2,-canvas.width/2,image.width, canvas.width);
+        }*/
+        ctx.drawImage(image, -image.width/2,-canvas.width/2,image.width, canvas.width);
+
+        ctx.restore();
+        console.info("despues de rotar");
+      };
+      this.getUrlRotation= function (options) {
+        this.setRotation(options);
+        return this.getUrl();
+      };
+
+      console.info("antes de la primera rotacion");
+      this.setRotation({deg:0});
+    };
+
+    var icon = new RotateIcon({url:"images/drone.png",width:40,height:40});
+    /*icon.setRotation({
+        deg: 92
+    });*/
+
+    console.info(icon.getUrl());
+
+    var image = {
+        url: icon.getUrl(),
+        // This marker is 20 pixels wide by 32 pixels tall.
+        size: new google.maps.Size(40, 40),
+        // The origin for this image is 0,0.
+        origin: new google.maps.Point(0,0),
+        // The anchor for this image is the base of the flagpole at 0,32.
+        anchor: new google.maps.Point(0, 40)
+    };
+
+
+    var lat = 6.232323;
+    var lon = -75.56889;
+
+    var hdn = 0;
+    var myLatLng = new google.maps.LatLng(lat, lon);
+    map.setZoom(15);
+    map.setCenter(myLatLng);
+
+    var beachMarker = new google.maps.Marker({
+        position: myLatLng,
+        map: map
+
+    });
+
+    var marker = null;
+    function move(lat,lon,angle){
+      if (marker !== null) {
+        marker.setIcon(icon.getUrlRotation({deg: angle}));
+        marker.setPosition(new google.maps.LatLng(lat, lon));
+      }
+    }
+
+
+
+    setTimeout(function () {
+      marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: 'hello',
+        id: 'hehehe',
+        icon: {
+          url:icon.getUrl()
+        }
+      });
+
+      var i = 0;
+      var count = 10;
+      var inrtevalo;
+      move(lat,lon,30);
+      move(lat,lon,30);
+      move(lat,lon,30);
+      inrtevalo = setInterval(function () {
+          console.info("i",i);
+          if (i < count) {
+            lat = lat + 0.003;
+            lon = lon + 0.003;
+            hdn = hdn + 30;
+            move(lat, lon, hdn);
+            i++;
+          }else{
+            clearInterval(inrtevalo);
+          }
+        },
+        10000
+      );
+    },
+    10000
+    );
+
+
+
+
+</script>
+</body>
+</html>

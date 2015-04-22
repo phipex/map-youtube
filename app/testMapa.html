@@ -20,30 +20,107 @@
 <body>
 <div id="map"></div>
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-<script src="../bower_components/openlayers/lib/OpenLayers.js"></script>
+<script src="../bower_components/openlayers/OpenLayers.js"></script>
+<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
 <script src="scripts/gmapolLayerReportes.js"></script>
 <script src="scripts/gmapolLayerlineArrow.js"></script>
 <script>
   var map;
-  function init(){
-    map = new OpenLayers.Map('map');
-    var base = new OpenLayers.Layer.WMS(
-      "Gisco Maps",
-      "http://66.228.127.2:8383/geoserver/gwc/service/wms?",
-      //"GiscoMaps/?",
-      { layers: 'roads_col:colombia_compl', srs: 'EPSG:4326' },
-      { numZoomLevels: 21, attribution: '<img src=\"http://www.mygisco.com/catalogo/gisco_logo.png\" width=\"105\" height=\"75\" alt=\".::GISCO::.\">' }
-    );
-    map.addLayers([base]);
-    map.addControl(new OpenLayers.Control.MousePosition());
-    map.addControl(new OpenLayers.Control.Attribution());
-    //map.addControl(new OpenLayers.Control.PanZoomBar());
 
-    map.addControl(new OpenLayers.Control.OverviewMap());
+  var mercator = new OpenLayers.Projection('EPSG:900913');
+
+  var wgs84 = new OpenLayers.Projection('EPSG:4326');
+
+  var dataTrack = null;
+
+  function creaMapaBase() {
+
+
+    var maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+
+    var restricted = new OpenLayers.Bounds(-9177335.3627539, -558255.29805487, -7367306.5332129, 1564859.5992986);
+
+    var resolutions = [156543.03390625, 78271.516953125, 39135.7584765625, 19567.87923828125, 9783.939619140625, 4891.9698095703125, 2445.9849047851562, 1222.9924523925781, 611.4962261962891, 305.74811309814453, 152.87405654907226, 76.43702827453613, 38.218514137268066, 19.109257068634033, 9.554628534317017, 4.777314267158508, 2.388657133579254, 1.194328566789627, 0.5971642833948135, 0.29858214169740677, 0.14929107084870338, 0.07464553542435169, 0.037322767712175846, 0.018661383856087923, 0.009330691928043961, 0.004665345964021981, 0.0023326729820109904, 0.0011663364910054952, 5.831682455027476E-4, 2.915841227513738E-4, 1.457920613756869E-4];
+    var mapOptions = {
+      //resolutions: resolutions,
+      projection: mercator,
+      //maxExtent: maxExtent,
+      units: "meters",
+      controls: [],
+      displayProjection: wgs84,
+      numZoomLevels: 24
+      //,      restrictedExtent: restricted
+    };
+    map = new OpenLayers.Map('map', mapOptions);
+
+
+    demolayer = new OpenLayers.Layer.WMS(
+      "Gisco Maps",
+      "http://66.228.127.2:8383/geoserver/gwc/service/wms",
+
+      { layers: 'roads_col:colombia_compl', format: 'image/png' },
+      {
+        attribution: '<img src=\"http://www.mygisco.com/catalogo/gisco_logo.png\" width=\"105\" height=\"75\" alt=\".::GISCO::.\">', buffer: 1, numZoomLevels: 24, transitionEffect: 'map-resize'//transitionEffect: 'resize'
+
+      });
+    //map.addLayer(demolayer);
+
+
+    //map.zoomToExtent(restricted, true);
+
+  }
+
+  function agregaMapasGoogle() {
+    var gsat = new OpenLayers.Layer.Google(
+      "Google Satellite",
+      { type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 19, visibility: false, sphericalMercator: true }
+    );
+    var gphy = new OpenLayers.Layer.Google(
+      "Google Physical",
+      { type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 15, visibility: false, sphericalMercator: true }
+    );
+    var gmap2 = new OpenLayers.Layer.Google(
+      "Google Streets", // the default
+      { numZoomLevels: 22, visibility: false, sphericalMercator: true }
+    );
+    var ghyb = new OpenLayers.Layer.Google(
+      "Google Hybrid",
+      { type: google.maps.MapTypeId.HYBRID, numZoomLevels: 19, visibility: false, sphericalMercator: true }
+    );
+
+    map.addLayers([gsat, gphy, gmap2, ghyb]);
+
+    map.setBaseLayer(gmap2);
+  }
+
+  function agregaOSM() {
+    var osm = new OpenLayers.Layer.OSM("Open Street Map", null, {
+
+      transitionEffect: 'resize'
+
+    });
+    map.addLayers([osm]);
+  }
+
+  function agregaContronlesDesk() {
+    map.addControl(new OpenLayers.Control.PanZoomBar({
+      position: new OpenLayers.Pixel(2, 15)
+    }));
+    map.addControl(new OpenLayers.Control.Navigation());
+    map.addControl(new OpenLayers.Control.Scale());
+    map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.LayerSwitcher());
-    map.setCenter(new OpenLayers.LonLat( - 75.56889, 6.232323), 8);
-    //map.events.register("zoomend", map, eventoCambioZoom);
-    //refrescarUltimo();
+    map.addControl(new OpenLayers.Control.Attribution());
+    map.addControl(new OpenLayers.Control.OverviewMap());
+    $(".olControlMousePosition").css("margin-bottom", "15px");
+  }
+
+  function init(){
+    creaMapaBase();
+    agregaMapasGoogle();
+    agregaContronlesDesk();
+    agregaOSM();
+    map.setCenter(new OpenLayers.LonLat(-75.56889, 6.232323).transform(wgs84, mercator), 8);
   }
 
   init();
@@ -56,16 +133,32 @@ function success(data){
     console.info(item);
     var lat = convert(item.lat);
     var lon = convert(item.lon);
-    var angule = parseInt(item.hea);
-    var label = "";
-    var divname = "";
-    layerrepo.addPoint(lat,lon,angule,label,divname);
+    var latlon = new OpenLayers.LonLat(lon, lat).transform(wgs84, mercator);
 
+    var angule = parseInt(item.hea);
+    var label = converLabel(item.tim);
+    var divname = "";
+    var featurePoint = layerrepo.getPointAdded(latlon.lat,latlon.lon,angule,label,divname);
+    item.feat = featurePoint;
   });
-  layerrepo.drawReporte(map,"primero",function(a,b,c){
-    console.info(a,b,c);
+  layerrepo.drawReporte(map,"primero",function(a){
+    console.info(a);
   });
+  layerrepo.toExtend(map);
+  dataTrack = data.RECORDS;
+  console.info(dataTrack);
 }
+
+  function converLabel(milisegundos){
+    var sec = parseInt(milisegundos/1000);
+
+    var min = parseInt(sec/60);
+    console.info(min,sec);
+    sec = sec-(min*60);
+
+    return ""+min+"."+sec;
+
+  }
 
   function convert(texto){
     texto = texto.replace(",",".");
@@ -83,7 +176,7 @@ function success(data){
     error: function (error) {
       console.error(error);
     },
-    async: true
+    async: false
   });
 
 </script>

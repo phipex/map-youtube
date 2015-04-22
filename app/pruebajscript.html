@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+</head>
+<body>
+	<script>
+	var reporte = {
+	lat:6.232323,//latitud
+	lon:-75.56889,//longitud
+	tim: 1234567,//unixtime
+	lik:34,//numero de likes
+	dlik:9,//numero de dislikes
+	pht:"",//foto
+	typ:0//tipo de reporte
+}; 
+
+var listaReportes = [];
+
+function randomReportes(){
+	for(var i=0;i<10;i++){
+		var nuevo = Object.create(reporte);
+    nuevo.pht = (Math.round(Math.random())==0)?null:"jksljdlfsd";
+		nuevo.lat += Math.random();
+		nuevo.lon += Math.random();
+		nuevo.tim += Math.floor(Math.random()*1000);
+		nuevo.lik = Math.floor(Math.random()*50);
+		nuevo.dlik = Math.floor(Math.random()*50);
+		nuevo.typ = Math.floor(Math.random()*6);
+    
+		listaReportes.push(nuevo);
+	}
+	
+}
+randomReportes();
+console.info(listaReportes);
+
+var resumen = {
+	0:{
+		typ:0,
+		cont:0,
+		lik:0,
+		dlik:0,
+		pht:0,
+		list:[]
+
+	},
+	1:{
+		typ:1,
+		cont:0,
+		lik:0,
+		dlik:0,
+		pht:0,
+		list:[]
+
+	},
+	2:{
+		typ:2,
+		cont:0,
+		lik:0,
+		dlik:0,
+		pht:0,
+		list:[]
+
+	},
+	3:{
+		typ:3,
+		cont:0,
+		lik:0,
+		dlik:0,
+		pht:0,
+		list:[]
+
+	},
+	4:{
+		typ:4,
+		cont:0,
+		lik:0,
+		dlik:0,
+		pht:0,
+		list:[]
+
+	},
+	5:{
+		typ:5,
+		cont:0,
+		lik:0,
+		dlik:0,
+		pht:0,
+		list:[]
+
+	},
+	6:{
+		typ:6,
+		cont:0,
+		lik:0,
+		dlik:0,
+		pht:0,
+		list:[]
+
+	}
+
+
+}
+
+function getResumen(){
+	var count = listaReportes.length
+	for (var i = count - 1; i >= 0; i--) {
+		var report = listaReportes[i];
+		var type = report.typ;
+		var conjunto = resumen[type];
+		conjunto.cont++;
+		conjunto.list.push(report);
+		conjunto.lik += reporte.lik;
+		conjunto.dlik += reporte.dlik;
+		if (report.pht) {
+			conjunto.pht++
+		};
+
+	};
+
+}
+getResumen();
+console.info(resumen);
+
+	</script>
+</body>
+</html>
