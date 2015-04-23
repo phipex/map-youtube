@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+<div id="player"></div>
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="scripts/MdlYoutube.js"></script>
+<script>
+
+  MdlYoutube.onIni= function () {
+    console.info("onini");
+  };
+  MdlYoutube.onPlayerReady= function () {
+    console.info("onplayerready");
+  };
+  MdlYoutube.onPlayVideo= function () {
+    console.log("onplayvideo");
+  };
+  MdlYoutube.onStopVideo= function () {
+    console.log("onstopvideo");
+  };
+  MdlYoutube.onStateChange= function (event) {
+    console.log("onstatechange",event);
+  };
+  MdlYoutube.ini('M7lc1UVf-VE');
+
+</script>
+</body>
+</html>

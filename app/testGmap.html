@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+  <style>
+    body,html{
+      height: 100%;
+      width: 100%;
+    }
+    #map{
+      height: 100%;
+      width: 100%;
+
+    }
+
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+<script src="scripts/MdlGMap.js" ></script>
+<script src="scripts/gmapLayerline.js"></script>
+<script src="scripts/gmapMarkerMoveRotateUni.js"></script>
+<script>
+
+  MdlGmap.ini();
+
+  var layerline = new gmapLayerLine();
+
+  var latlons = [
+    {
+      lat:6.232323,
+      lon:-75.56889,
+      hdn:10
+    },
+    {
+      lat:6.2132323,
+      lon:-75.56889,
+      hdn:-35
+    },
+    {
+      lat:6.2532323,
+      lon:-75.565889,
+      hdn:-80
+    },
+    {
+      lat:6.2232323,
+      lon:-75.56889,
+      hdn:-190
+    },
+    {
+      lat:6.2432323,
+      lon:-75.564889,
+      hdn:10
+    }
+  ];
+
+  var count = latlons.length;
+  for (var i = 0; i < count; i++) {
+    var obj = latlons[i];
+    layerline.pushPoint(obj.lat,obj.lon);
+  }
+
+  layerline.drawRute();
+  layerline.toExtend(map);
+
+
+
+  var lat = 6.232323;
+  var lon = -75.56889;
+
+  var myLatLng = new google.maps.LatLng(lat, lon);
+
+  var markerInicio = new google.maps.Marker({
+    position: myLatLng,
+      map: map
+  });
+function FU(extractedMethodSettings) {
+
+      var marker = new MarkerMoveRotateUni(extractedMethodSettings.lat, extractedMethodSettings.lon, 0, {
+
+          url: "images/drone.png",
+
+          width: 40,
+
+          height: 40
+
+      });
+
+      var i = 0;
+
+      var count = extractedMethodSettings.latlons.length;
+
+      var inrtevalo = setInterval(function() {
+
+          if (i < count) {
+
+              var obj = extractedMethodSettings.latlons[i];
+
+              console.info(obj);
+
+              marker.moveMarker(obj.lat, obj.lon, obj.hdn);
+
+              i++
+
+          } else {
+
+              clearInterval(inrtevalo)
+
+          }
+
+      }, 1e4);
+
+  }
+
+  
+
+  FU({
+
+      lat: lat,
+
+      lon: lon,
+
+      latlons: latlons
+
+  });
+
+  
+
+
+
+</script>
+</body>
+</html>

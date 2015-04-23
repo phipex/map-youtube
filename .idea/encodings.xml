@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/app/scripts/MdlTrack.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/scripts/Youtube.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/testMapa.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/testYoutube.html" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/TrackVideo.html" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/data/reportelogvideodelay.json" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/data/reportelogvideodelaycomentarios.json" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/MdlGMap.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/MdlYoutube.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/MdlYoutubeMap.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/MdlYoutubeMapComent.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/gmapLayerline.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/gmapMarkerMoveRotateUni.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/styles/magic-bootstrap.css" charset="UTF-8" />
   </component>
 </project>
