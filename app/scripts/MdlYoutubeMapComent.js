@@ -1,3 +1,11 @@
+function trackText(track){
+  var text = "Tiempo: "+converLabel(track.tim)+ " Minutos "
+    +"</br>Dir: "+track.hea
+    +"</br>Latitud: "+track.lat
+    +"</br>Longitud: "+track.lon;
+  return  text;
+}
+
 /**
  * Modulo que genera un mapa y un video de youtube, debe tener
  * en la pagina que es llamado un div con id 'mapa' y otro con id 'player'
@@ -12,6 +20,7 @@ var MdlYoutubeMapComent = {
     listCommet:[],
     eventAddComment:null,
     current:0,
+    markerTemp:null,
     compare_fn:function(value, item){
 
       var time = item.tim;
@@ -73,7 +82,7 @@ var MdlYoutubeMapComent = {
                   MdlYoutubeMapComent.goToTrackTime((current * 1000)-delay);
 
                 };
-                
+
               },
               800
       );
@@ -128,6 +137,21 @@ var MdlYoutubeMapComent = {
       this.dataTrack = RECORDS;
 
       this.droneMarker = new MarkerMoveRotateUni(latlonIni.lat(),latlonIni.lng(),hea,icon);
+      var addMsg = function(marker){
+
+
+        google.maps.event.addListener(marker, 'click', function() {
+          console.info(marker);
+          var contentString = marker.msg;
+
+          var infowindow = new google.maps.InfoWindow({
+            content: contentString
+          });
+          infowindow.open(map,marker);
+        });
+      };
+      this.droneMarker.marker.msg = "No ha iniciado el vuelo";
+      addMsg(this.droneMarker.marker);
       /*//borrar
 markerInicio = new google.maps.Marker({
     position: latlonIni,
@@ -151,6 +175,7 @@ markerInicio = new google.maps.Marker({
         var angle = item.hea;
         //markerInicio.setPosition(item.latlon);
         this.droneMarker.moveMarker(lat,lon,angle);
+        this.droneMarker.marker.msg = trackText(item);
       }
     },
   /**
@@ -217,20 +242,20 @@ markerInicio = new google.maps.Marker({
                 icon:"images/photo.png"
             });
           var addMsg = function(marker,contentString){
-            
-                   
+
+
             google.maps.event.addListener(marker, 'click', function() {
               console.info(contentString);
-              
+
               var infowindow = new google.maps.InfoWindow({
                   content: contentString
               });
               infowindow.open(map,marker);
             });
-          }
-          var contentString = "<div>"+obj.title+
-          "</br><a href='#' data-foto='"+obj.fot+"' data-title='"+obj.title+"' onClick='MdlYoutubeMapComent.eventFoto(event)'>Ver Foto</a></div>";
-          
+          };
+          var contentString = "<div>"+obj.title+"<br/>"+obj.com+
+          "</br><a href='#' data-foto='"+obj.fot+"' data-coment='"+obj.com+"' data-title='"+obj.title+"' class='linkVerFoto'>Ver Foto</a></div>";
+
           addMsg(marker, contentString);
           this.listPhoto.push(marker);
 
@@ -254,19 +279,19 @@ markerInicio = new google.maps.Marker({
                 icon:"images/comment-map-icon.png"
             });
           var contentString = obj.com;
-          
+
           var addMsg = function(marker,contentString){
-            
-                   
+
+
             google.maps.event.addListener(marker, 'click', function() {
-              
-              
+
+
               var infowindow = new google.maps.InfoWindow({
                   content: contentString
               });
               infowindow.open(map,marker);
             });
-          }
+          };
           addMsg(marker, contentString);
           this.listCommet.push(marker);
 
@@ -274,11 +299,56 @@ markerInicio = new google.maps.Marker({
 
       };
     },
-    eventFoto:function(event){
+    eventFoto: function (event) {
+      console.info(event);
+      console.info(event.target);
+      var $contenedor = $(event.target);
+      var foto = $contenedor.data("foto");
+      var titulo = $contenedor.data("title");
+      var comentario = $contenedor.data("coment");
+      $("#myModalLabel").text(titulo);
+      $("#imagen").empty();
+      var ancho = $(window).width();
+      var alto = $(window).height();
+      console.info("ancho", ancho);
+      if (ancho < 500) {
+        ancho = 500;
+      }
+      ancho = ancho * .9;
+      alto = alto * .9;
+      //$("#imagen").css("width",ancho);
+      //$("#imagen").css("max-width", ancho);
+      $("#imagen").css("max-height", alto);
+      //FotosVerticales.inLoad = true;
+      var imag = $("<img/>")
+        .load(function () {
+          console.log("image loaded correctly");
+          $("#modalComentario").html(comentario).removeClass("hidden");
+          $("#imagen").zoom({
+            duration:250,
+            callback: function(){
+              alert("Pase el mause sobre la foto para verla a mejor zoom");
+            }
+          });
+          //FotosVerticales.inLoad = false;
+        })
+        .error(function () {
+          console.log("error loading image");
+          $("#modalAlert").removeClass(" hidden");
+          $("#imagen").hide();
+        })
+
+        .attr({"src": "images/" + foto,
+          "id": "fotoVisor",
+          "class":"todoAncho todoAlto"});
+      $("#imagen").append(imag);
+      $('#myModal').modal('show');
+    },
+    eventFoto0:function(event){
         console.info(event.originalTarget);
-        var $contenedor = $(event.originalTarget)
+        var $contenedor = $(event.originalTarget);
         var foto = $contenedor.data("foto");
-        var titulo = $contenedor.data("title");;
+        var titulo = $contenedor.data("title");
         $("#imagen").empty();
                         //FotosVerticales.inLoad = true;
                         var imag = $("<img/>")
@@ -327,19 +397,34 @@ $(document).bind('PgwModal::PushContent', function() {
       this.eventAddComment = google.maps.event.addListener(map, 'click', function(event) {
         var pos = event.latLng;
         console.info("click");
-        var contentString = "<div>Ingrese un Comentario <br/><textarea rows='4' cols='50'></textarea><br/><button>Agregar</button></div>";
+        var contentString = "<div>Ingrese un Comentario <br/><textarea rows='4' cols='50'></textarea><br/><button class='btnAgregar'>Agregar</button><button class='btnCancelar'>Cancelar</button></div>";
         var $contenido = $(contentString);
         var marker = new google.maps.Marker({
               position: pos,
-                map: map
-                
+                map: map,
+                icon:"images/comment-map-icon.png"
             });
-        var infowindow = new google.maps.InfoWindow({
+        MdlYoutubeMapComent.markerTemp = marker;
+
+        var addMsg = function(marker){
+
+
+          google.maps.event.addListener(marker, 'click', function() {
+            console.info(marker);
+            var contentString = marker.msg;
+
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+            infowindow.open(map,marker);
+          });
+        };
+        addMsg(marker);
+        MdlYoutubeMapComent.infowindow = new google.maps.InfoWindow({
           content: $contenido.html(),
           position: pos
         });
-        infowindow.open(map);
-
+        MdlYoutubeMapComent.infowindow.open(map);
       });
 
     },
@@ -347,3 +432,32 @@ $(document).bind('PgwModal::PushContent', function() {
       google.maps.event.removeListener(MdlYoutubeMapComent.eventAddComment);
     }
   };
+
+  $(document).on("click",".btnAgregar", function (event) {
+    console.info("event",event);
+    var current = event.currentTarget;
+    var $parent = $(current).parent();
+    console.info($parent);
+    var value = $parent.find("textarea").val();
+    console.info("value",value);
+    MdlYoutubeMapComent.markerTemp.msg= value;
+    alert("Mensaje Agregado");
+    //TODO cerrar openwindows
+    MdlYoutubeMapComent.infowindow.close();
+  });
+
+$(document).on("click",".btnCancelar", function (event) {
+  console.info("event",event);
+  var current = event.currentTarget;
+  var $parent = $(current).parent();
+  console.info($parent);
+  MdlYoutubeMapComent.markerTemp.setMap(null);
+
+  //TODO cerrar openwindows
+  MdlYoutubeMapComent.infowindow.close();
+  MdlYoutubeMapComent.markerTemp = null;
+  alert("Mensaje Cancelado");
+});
+
+
+$(document).on("click",".linkVerFoto",MdlYoutubeMapComent.eventFoto );

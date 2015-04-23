@@ -3,36 +3,64 @@
   "dly":12794,
 "fot":[
 	{
-		"lat":"43,90754",
-		"lon":"-96,694962",
+		"lat":"43,905844",
+		"lon":"-96,694182",
 		"fot":"Parque Barbosa.JPG",
-		"com":"",
+		"com":"Parque de Barbosa",
 		"title":"Barbosa"
 	},
 	{
 		"lat":"43,907771",
 		"lon":"-96,695086",
 		"fot":"Parque Alejandria.JPG",
-		"com":"",
+		"com":"Parque de Alejandria",
 		"title":"Alendria"
 	},
 	{
 		"lat":"43,8937",
 		"lon":"-96,689255",
 		"fot":"Parque de Santa Elena.JPG",
-		"com":"",
+		"com":"Parque de Santa Elena",
 		"title":"Santa Elena"
-	}
+	},
+  {
+    "lat":"43,906601",
+    "lon":"-96,68657",
+    "fot":"DJI01481.JPG",
+    "com":"Sector Sandiego",
+    "title":"San Diego 1"
+  },
+  {
+    "lat":"43,906601",
+    "lon":"-96,68657",
+    "fot":"DJI01482.JPG",
+    "com":"Sector Sandiego",
+    "title":"San Diego 2"
+  },
+  {
+    "lat":"43,893803",
+    "lon":"-96,687676",
+    "fot":"DJI01739.JPG",
+    "com":"Techo",
+    "title":"Techo"
+  },
+  {
+    "lat":"43,894296",
+    "lon":"-96,687711",
+    "fot":"DJI01738",
+    "com":"Fachada 1",
+    "title":"Fachada 1"
+  }
 ],
 "coment":[
 	{
-		"lat":"43,893682",
-		"lon":"-96,689281",
+    "lat":"43,899764",
+    "lon":" -96,691557",
 		"com":"Comentario de prueba 1"
 	},
 	{
-		"lat":"43,893622",
-		"lon":"-96,688947",
+    "lat":"43,903748",
+    "lon":"-96,693271",
 		"com":"Comentario de prueba 2"
 	},
 	{
@@ -40,7 +68,7 @@
 		"lon":"-96,687911",
 		"com":"Comentario de prueba 3"
 	}
-],  
+],
 "RECORDS":[
 {
 "tim":998,
