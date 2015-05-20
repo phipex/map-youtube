@@ -2,5 +2,6 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{mapvideo node_modules}" />
+    <file url="file://$USER_HOME$/Dropbox/Gisco/mapvideo" libraries="{mapvideo node_modules}" />
   </component>
 </project>
